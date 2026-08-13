@@ -32,7 +32,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial; backgr
 /* ===== CARDS DE MAQUINAS ===== */
 .maquinas-grid { display: flex; flex-direction: column; gap: 30px; }
 .card-maquina {
-  display: flex; background: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  display: flex; background: #fff; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
   overflow: hidden; border-left: 6px solid var(--amarelo); transition: transform 0.2s;
 }
 .card-maquina:hover { transform: translateY(-5px); }
@@ -42,8 +42,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial; backgr
 .card-maquina p { font-size: 16px; line-height: 1.7; color: #555; }
 
 @media (max-width: 768px) {
- .card-maquina { flex-direction: column; }
- .card-maquina img { width: 100%; height: 250px; }
+.card-maquina { flex-direction: column; }
+.card-maquina img { width: 100%; height: 250px; }
 }
 
 /* ===== GALERIA DE SERVIÇOS ===== */
@@ -100,12 +100,14 @@ const SHEET_SERVICOS_URL = "COLA_AQUI_LINK_CSV_DA_ABA_SERVICOS"; // Arquivo > Co
 const SHEET_CONFIG_URL = "COLA_AQUI_LINK_CSV_DA_ABA_CONFIG";
 let todosServicos = [];
 
+const GITHUB_URL = "https://raw.githubusercontent.com/Bittencourt-SRE/Derick-m-quinas-pesadas/main/";
+
 const maquinas = [
-  { nome: "Motoniveladora CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20230124-8b6c4-7c2f2", desc: "Ideal para nivelamento de terrenos, acabamento de ruas e estradas. Garante precisão milimétrica no serviço de terraplenagem." },
-  { nome: "Escavadeira Hidráulica CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20191121-45612-8b6c4", desc: "Perfeita para escavações profundas, valas, fundações e demolições. Alta força e versatilidade para qualquer obra." },
-  { nome: "Retroescavadeira CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20180719-3c7a2-2f3a1", desc: "A mais versátil. Com pá na frente e concha atrás. Ótima para obras urbanas, carga, descarga e pequenas escavações." },
-  { nome: "Pá Carregadeira CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20210105-1a2b3-4c5d6", desc: "Alta capacidade de carga e movimentação de terra, areia e brita. Agilidade para pátios, mineração e grandes obras." },
-  { nome: "Trator de Esteira CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20190514-2b3c4-5d6e7", desc: "Força bruta para desmatamento, terraplanagem pesada e empurrar grandes volumes de terra em terrenos difíceis." }
+  { nome: "Motoniveladora CAT", img: GITHUB_URL + "1-motoniveladora.jpg", desc: "Ideal para nivelamento de terrenos, acabamento de ruas e estradas. Garante precisão milimétrica no serviço de terraplenagem." },
+  { nome: "Escavadeira Hidráulica CAT", img: GITHUB_URL + "2-escavadeira.jpg", desc: "Perfeita para escavações profundas, valas, fundações e demolições. Alta força e versatilidade para qualquer obra." },
+  { nome: "Retroescavadeira CAT", img: GITHUB_URL + "3-retroescavadeira.jpg", desc: "A mais versátil. Com pá na frente e concha atrás. Ótima para obras urbanas, carga, descarga e pequenas escavações." },
+  { nome: "Pá Carregadeira CAT", img: GITHUB_URL + "4-pacarregadeira.jpg", desc: "Alta capacidade de carga e movimentação de terra, areia e brita. Agilidade para pátios, mineração e grandes obras." },
+  { nome: "Trator de Esteira CAT", img: GITHUB_URL + "5-tratoresteira.jpg", desc: "Força bruta para desmatamento, terraplanagem pesada e empurrar grandes volumes de terra em terrenos difíceis." }
 ];
 
 function parseCSV(text) {
@@ -133,7 +135,7 @@ function converterLinkDrive(link) {
 function criarCardsMaquinas() {
   document.getElementById('lista-maquinas').innerHTML = maquinas.map(m => `
     <div class="card-maquina">
-      <img src="${m.img}" alt="${m.nome}" onerror="this.src='https://via.placeholder.com/400x300?text=CAT'">
+      <img src="${m.img}" alt="${m.nome}" onerror="this.src='https://via.placeholder.com/400x300?text=Imagem+nao+encontrada'">
       <div class="info">
         <h3>${m.nome}</h3>
         <p>${m.desc}</p>
