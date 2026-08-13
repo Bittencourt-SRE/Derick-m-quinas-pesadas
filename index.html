@@ -100,14 +100,14 @@ const SHEET_SERVICOS_URL = "COLA_AQUI_LINK_CSV_DA_ABA_SERVICOS"; // Arquivo > Co
 const SHEET_CONFIG_URL = "COLA_AQUI_LINK_CSV_DA_ABA_CONFIG";
 let todosServicos = [];
 
-const GITHUB_URL = "https://raw.githubusercontent.com/Bittencourt-SRE/Derick-m-quinas-pesadas/main/";
+const GITHUB_URL = "https://cdn.jsdelivr.net/gh/Bittencourt-SRE/Derick-m-quinas-pesadas@main/";
 
 const maquinas = [
-  { nome: "Motoniveladora CAT", img: GITHUB_URL + "1-motoniveladora.jpg", desc: "Ideal para nivelamento de terrenos, acabamento de ruas e estradas. Garante precisão milimétrica no serviço de terraplenagem." },
-  { nome: "Escavadeira Hidráulica CAT", img: GITHUB_URL + "2-escavadeira.jpg", desc: "Perfeita para escavações profundas, valas, fundações e demolições. Alta força e versatilidade para qualquer obra." },
-  { nome: "Retroescavadeira CAT", img: GITHUB_URL + "3-retroescavadeira.jpg", desc: "A mais versátil. Com pá na frente e concha atrás. Ótima para obras urbanas, carga, descarga e pequenas escavações." },
-  { nome: "Pá Carregadeira CAT", img: GITHUB_URL + "4-pacarregadeira.jpg", desc: "Alta capacidade de carga e movimentação de terra, areia e brita. Agilidade para pátios, mineração e grandes obras." },
-  { nome: "Trator de Esteira CAT", img: GITHUB_URL + "5-tratoresteira.jpg", desc: "Força bruta para desmatamento, terraplanagem pesada e empurrar grandes volumes de terra em terrenos difíceis." }
+  { nome: "Motoniveladora CAT", img: GITHUB_URL + "motoniveladora.jpg", desc: "Ideal para nivelamento de terrenos, acabamento de ruas e estradas. Garante precisão milimétrica no serviço de terraplenagem." },
+  { nome: "Escavadeira Hidráulica CAT", img: GITHUB_URL + "escavadeira.jpg", desc: "Perfeita para escavações profundas, valas, fundações e demolições. Alta força e versatilidade para qualquer obra." },
+  { nome: "Retroescavadeira CAT", img: GITHUB_URL + "retroescavadeira.jpg", desc: "A mais versátil. Com pá na frente e concha atrás. Ótima para obras urbanas, carga, descarga e pequenas escavações." },
+  { nome: "Pá Carregadeira CAT", img: GITHUB_URL + "pacarregadeira.jpg", desc: "Alta capacidade de carga e movimentação de terra, areia e brita. Agilidade para pátios, mineração e grandes obras." },
+  { nome: "Trator de Esteira CAT", img: GITHUB_URL + "tratoresteira.jpg", desc: "Força bruta para desmatamento, terraplanagem pesada e empurrar grandes volumes de terra em terrenos difíceis." }
 ];
 
 function parseCSV(text) {
