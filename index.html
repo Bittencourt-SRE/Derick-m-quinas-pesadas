@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Derick Máquinas Pesadas</title>
+<style>
+:root {
+  --cinza: #2a2a2a;
+  --cinza-perola: #f4f4f5;
+  --amarelo: #FFC72C; /* Amarelo CAT */
+  --amarelo-escuro: #e6b325;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial; background: var(--cinza-perola); color: var(--cinza); }
+
+.header { background: var(--cinza); color: #fff; padding: 20px; text-align: center; border-bottom: 5px solid var(--amarelo); }
+.header h1 { font-size: 28px; letter-spacing: 2px; }
+.header p { color: #ccc; font-size: 14px; }
+
+.menu { background: #fff; display: flex; justify-content: center; gap: 20px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 50; }
+.menu button { background: none; border: none; font-size: 16px; font-weight: 700; cursor: pointer; padding: 8px 15px; border-bottom: 3px solid transparent; }
+.menu button.active { color: var(--amarelo-escuro); border-bottom: 3px solid var(--amarelo); }
+
+.page { display: none; padding: 50px 20px; max-width: 1200px; margin: 0 auto; }
+.page.active { display: block; }
+.page h2 { color: var(--cinza); text-align: center; font-size: 32px; margin-bottom: 40px; border-bottom: 3px solid var(--amarelo); display: inline-block; padding-bottom: 10px; }
+
+.loading { text-align: center; color: var(--cinza); font-size: 18px; padding: 40px; }
+
+/* ===== CARDS DE MAQUINAS ===== */
+.maquinas-grid { display: flex; flex-direction: column; gap: 30px; }
+.card-maquina {
+  display: flex; background: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  overflow: hidden; border-left: 6px solid var(--amarelo); transition: transform 0.2s;
+}
+.card-maquina:hover { transform: translateY(-5px); }
+.card-maquina img { width: 40%; object-fit: cover; }
+.card-maquina.info { padding: 30px; flex: 1; }
+.card-maquina h3 { font-size: 24px; color: var(--cinza); margin-bottom: 15px; }
+.card-maquina p { font-size: 16px; line-height: 1.7; color: #555; }
+
+@media (max-width: 768px) {
+ .card-maquina { flex-direction: column; }
+ .card-maquina img { width: 100%; height: 250px; }
+}
+
+/* ===== GALERIA DE SERVIÇOS ===== */
+.galeria-filtros { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
+.btn-filtro { background: #ddd; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; }
+.btn-filtro.active { background: var(--amarelo); color: var(--cinza); }
+.galeria-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.item-galeria { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.item-galeria img { width: 100%; height: 220px; object-fit: cover; }
+.item-galeria.legenda { padding: 15px; }
+.item-galeria h4 { color: var(--cinza); margin-bottom: 5px; }
+
+.btn-whatsapp { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: #fff; padding: 15px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100; }
+.rodape { background: var(--cinza); color: #aaa; text-align: center; padding: 20px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>DERICK MÁQUINAS PESADAS</h1>
+  <p>Terraplenagem e Locação de Máquinas</p>
+</div>
+
+<div class="menu">
+  <button class="active" onclick="showPage('maquinas')">Máquinas</button>
+  <button onclick="showPage('servicos')">Serviços</button>
+  <button onclick="showPage('sobre')">Sobre</button>
+</div>
+
+<!-- PAGINA MAQUINAS -->
+<div id="maquinas" class="page active">
+  <h2>Nossa Frota</h2>
+  <div id="lista-maquinas" class="maquinas-grid"></div>
+</div>
+
+<!-- PAGINA SERVICOS -->
+<div id="servicos" class="page">
+  <h2>Galeria de Serviços</h2>
+  <div id="filtros-servicos" class="galeria-filtros"></div>
+  <div id="grid-servicos" class="galeria-grid"><div class="loading">Carregando serviços...</div></div>
+</div>
+
+<!-- PAGINA SOBRE -->
+<div id="sobre" class="page">
+  <h2>Sobre Nós</h2>
+  <div id="texto-sobre" class="loading">Carregando...</div>
+</div>
+
+<a href="#" id="btn-whatsapp" target="_blank" class="btn-whatsapp">Fale no WhatsApp</a>
+<div class="rodape">Desenvolvido por Edmilson Bittencourt</div>
+
+<script>
+const SHEET_SERVICOS_URL = "COLA_AQUI_LINK_CSV_DA_ABA_SERVICOS"; // Arquivo > Compartilhar > Publicar na web > CSV
+const SHEET_CONFIG_URL = "COLA_AQUI_LINK_CSV_DA_ABA_CONFIG";
+let todosServicos = [];
+
+const maquinas = [
+  { nome: "Motoniveladora CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20230124-8b6c4-7c2f2", desc: "Ideal para nivelamento de terrenos, acabamento de ruas e estradas. Garante precisão milimétrica no serviço de terraplenagem." },
+  { nome: "Escavadeira Hidráulica CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20191121-45612-8b6c4", desc: "Perfeita para escavações profundas, valas, fundações e demolições. Alta força e versatilidade para qualquer obra." },
+  { nome: "Retroescavadeira CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20180719-3c7a2-2f3a1", desc: "A mais versátil. Com pá na frente e concha atrás. Ótima para obras urbanas, carga, descarga e pequenas escavações." },
+  { nome: "Pá Carregadeira CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20210105-1a2b3-4c5d6", desc: "Alta capacidade de carga e movimentação de terra, areia e brita. Agilidade para pátios, mineração e grandes obras." },
+  { nome: "Trator de Esteira CAT", img: "https://s7d2.scene7.com/is/image/Caterpillar/CM20190514-2b3c4-5d6e7", desc: "Força bruta para desmatamento, terraplanagem pesada e empurrar grandes volumes de terra em terrenos difíceis." }
+];
+
+function parseCSV(text) {
+  const rows = []; let row = [], cell = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i], next = text[i+1];
+    if (char === '"') { if (inQuotes && next === '"') { cell += '"'; i++; } else { inQuotes =!inQuotes; } }
+    else if (char === ',' &&!inQuotes) { row.push(cell); cell = ''; }
+    else if ((char === '\n' || char === '\r') &&!inQuotes) { if (cell!== '' || row.length > 0) { row.push(cell); rows.push(row); row = []; cell = ''; } if (char === '\r' && next === '\n') i++; }
+    else { cell += char; }
+  }
+  if (cell!== '' || row.length > 0) { row.push(cell); rows.push(row); }
+  const headers = rows[0];
+  return rows.slice(1).map(r => Object.fromEntries(headers.map((h, i) => [h.trim(), r[i]?.trim() || ''])));
+}
+
+function converterLinkDrive(link) {
+  if(!link) return "";
+  link = link.replace(/"/g, '').trim();
+  const match = link.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if (match && match[1]) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+  return link;
+}
+
+function criarCardsMaquinas() {
+  document.getElementById('lista-maquinas').innerHTML = maquinas.map(m => `
+    <div class="card-maquina">
+      <img src="${m.img}" alt="${m.nome}" onerror="this.src='https://via.placeholder.com/400x300?text=CAT'">
+      <div class="info">
+        <h3>${m.nome}</h3>
+        <p>${m.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function criarGaleria(dados) {
+  todosServicos = dados;
+  const categorias = [...new Set(dados.map(s => s.Categoria).filter(c => c))];
+
+  document.getElementById('filtros-servicos').innerHTML =
+    `<button class="btn-filtro active" onclick="filtrarServicos('todos')">Todos</button>` +
+    categorias.map(cat => `<button class="btn-filtro" onclick="filtrarServicos('${cat}')">${cat}</button>`).join('');
+
+  filtrarServicos('todos');
+}
+
+function filtrarServicos(categoria) {
+  document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const filtrados = categoria === 'todos'? todosServicos : todosServicos.filter(s => s.Categoria === categoria);
+
+  document.getElementById('grid-servicos').innerHTML = filtrados.map(s => `
+    <div class="item-galeria">
+      <img src="${converterLinkDrive(s['Link da imagem'])}" alt="${s.Titulo}">
+      <div class="legenda">
+        <h4>${s.Titulo}</h4>
+        <p>${s.Descricao}</p>
+      </div>
+    </div>
+  `).join('') || '<p>Nenhum serviço nessa categoria.</p>';
+}
+
+async function carregarDados() {
+  try {
+    const [resServicos, resConfig] = await Promise.all([fetch(SHEET_SERVICOS_URL), fetch(SHEET_CONFIG_URL)]);
+    const servicos = parseCSV(await resServicos.text()).filter(s => s.Titulo);
+    const config = parseCSV(await resConfig.text());
+
+    criarGaleria(servicos);
+    const whatsapp = config.find(c => c.Chave === 'Whatsapp')?.Valor;
+    const sobre = config.find(c => c.Chave === 'Sobre')?.Valor;
+
+    document.getElementById('btn-whatsapp').href = `https://wa.me/${whatsapp}?text=Olá, vim pelo site da Derick Máquinas`;
+    document.getElementById('texto-sobre').innerHTML = `<p style="font-size:18px; line-height:1.8; text-align:center;">${sobre}</p>`;
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('grid-servicos').innerHTML = '<p>Erro ao carregar. Verifica se as planilhas estão publicadas.</p>';
+  }
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+criarCardsMaquinas();
+carregarDados();
+</script>
+</body>
+</html>
